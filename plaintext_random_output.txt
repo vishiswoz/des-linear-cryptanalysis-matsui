@@ -1,0 +1,384 @@
+Trial #1
+flag = WACON2023{1b67397d039b78ac}
+Count: 30113, Bias: -0.081024169921875
+Guessed key bit: 1
+Correct key bit: 1
+------------------------
+Trial #2
+flag = WACON2023{08adc8b1681a14e0}
+Count: 30384, Bias: -0.07275390625
+Guessed key bit: 1
+Correct key bit: 1
+------------------------
+Trial #3
+flag = WACON2023{a3f539ce1eef2706}
+Count: 35304, Bias: 0.077392578125
+Guessed key bit: 0
+Correct key bit: 0
+------------------------
+Trial #4
+flag = WACON2023{a14718a711a4d9b3}
+Count: 34964, Bias: 0.0670166015625
+Guessed key bit: 0
+Correct key bit: 0
+------------------------
+Trial #5
+flag = WACON2023{4d33cc8785811f01}
+Count: 35337, Bias: 0.078399658203125
+Guessed key bit: 0
+Correct key bit: 0
+------------------------
+Trial #6
+flag = WACON2023{199a6ba37d2ba0c3}
+Count: 35216, Bias: 0.07470703125
+Guessed key bit: 0
+Correct key bit: 0
+------------------------
+Trial #7
+flag = WACON2023{c2c12fdf212d6d91}
+Count: 35164, Bias: 0.0731201171875
+Guessed key bit: 0
+Correct key bit: 0
+------------------------
+Trial #8
+flag = WACON2023{85d1639b9fe3e5b9}
+Count: 35064, Bias: 0.070068359375
+Guessed key bit: 0
+Correct key bit: 0
+------------------------
+Trial #9
+flag = WACON2023{7be44a3b273e7f9b}
+Count: 35455, Bias: 0.082000732421875
+Guessed key bit: 0
+Correct key bit: 0
+------------------------
+Trial #10
+flag = WACON2023{2e24c6f7c35f950e}
+Count: 30211, Bias: -0.078033447265625
+Guessed key bit: 1
+Correct key bit: 1
+------------------------
+Trial #11
+flag = WACON2023{75d3b7963b0eaf61}
+Count: 30241, Bias: -0.077117919921875
+Guessed key bit: 1
+Correct key bit: 1
+------------------------
+Trial #12
+flag = WACON2023{e8cd4d30a10300db}
+Count: 30382, Bias: -0.07281494140625
+Guessed key bit: 1
+Correct key bit: 1
+------------------------
+Trial #13
+flag = WACON2023{54c8c0c818d4d4c5}
+Count: 35268, Bias: 0.0762939453125
+Guessed key bit: 0
+Correct key bit: 0
+------------------------
+Trial #14
+flag = WACON2023{4325b878a72dfcba}
+Count: 30414, Bias: -0.07183837890625
+Guessed key bit: 1
+Correct key bit: 1
+------------------------
+Trial #15
+flag = WACON2023{9fbb9c0ae798f5a9}
+Count: 30526, Bias: -0.06842041015625
+Guessed key bit: 1
+Correct key bit: 1
+------------------------
+Trial #16
+flag = WACON2023{83167dcb85ac251d}
+Count: 35120, Bias: 0.07177734375
+Guessed key bit: 0
+Correct key bit: 0
+------------------------
+Trial #17
+flag = WACON2023{bbf8d40139575ff9}
+Count: 35347, Bias: 0.078704833984375
+Guessed key bit: 0
+Correct key bit: 0
+------------------------
+Trial #18
+flag = WACON2023{2d97d59167d52cc3}
+Count: 35081, Bias: 0.070587158203125
+Guessed key bit: 0
+Correct key bit: 0
+------------------------
+Trial #19
+flag = WACON2023{e0684fef6bc513a2}
+Count: 30523, Bias: -0.068511962890625
+Guessed key bit: 1
+Correct key bit: 1
+------------------------
+Trial #20
+flag = WACON2023{96ece2ce2cb167fb}
+Count: 30293, Bias: -0.075531005859375
+Guessed key bit: 1
+Correct key bit: 1
+------------------------
+Trial #21
+flag = WACON2023{93e5441884dbd6b7}
+Count: 30370, Bias: -0.07318115234375
+Guessed key bit: 1
+Correct key bit: 1
+------------------------
+Trial #22
+flag = WACON2023{66549ff889d6a5c5}
+Count: 35330, Bias: 0.07818603515625
+Guessed key bit: 0
+Correct key bit: 0
+------------------------
+Trial #23
+flag = WACON2023{7bb2087848a8f97c}
+Count: 30196, Bias: -0.0784912109375
+Guessed key bit: 1
+Correct key bit: 1
+------------------------
+Trial #24
+flag = WACON2023{545105e47a4ae330}
+Count: 30412, Bias: -0.0718994140625
+Guessed key bit: 1
+Correct key bit: 1
+------------------------
+Trial #25
+flag = WACON2023{53b71528b2364a8e}
+Count: 30310, Bias: -0.07501220703125
+Guessed key bit: 1
+Correct key bit: 1
+------------------------
+Trial #26
+flag = WACON2023{60a78fb9f239d7ce}
+Count: 35114, Bias: 0.07159423828125
+Guessed key bit: 0
+Correct key bit: 0
+------------------------
+Trial #27
+flag = WACON2023{e607e24ed3ee1015}
+Count: 30379, Bias: -0.072906494140625
+Guessed key bit: 1
+Correct key bit: 1
+------------------------
+Trial #28
+flag = WACON2023{726f9d774b170c8e}
+Count: 30363, Bias: -0.073394775390625
+Guessed key bit: 1
+Correct key bit: 1
+------------------------
+Trial #29
+flag = WACON2023{62ec00d1b71cc070}
+Count: 34930, Bias: 0.06597900390625
+Guessed key bit: 0
+Correct key bit: 0
+------------------------
+Trial #30
+flag = WACON2023{5eea466fdb94e8f6}
+Count: 30250, Bias: -0.07684326171875
+Guessed key bit: 1
+Correct key bit: 1
+------------------------
+Trial #31
+flag = WACON2023{931b00acc4a5f7e3}
+Count: 35382, Bias: 0.07977294921875
+Guessed key bit: 0
+Correct key bit: 0
+------------------------
+Trial #32
+flag = WACON2023{ab8c17f41d12e927}
+Count: 35173, Bias: 0.073394775390625
+Guessed key bit: 0
+Correct key bit: 0
+------------------------
+Trial #33
+flag = WACON2023{fb91d2f268f7591b}
+Count: 35382, Bias: 0.07977294921875
+Guessed key bit: 0
+Correct key bit: 0
+------------------------
+Trial #34
+flag = WACON2023{725c557f605bbe15}
+Count: 35116, Bias: 0.0716552734375
+Guessed key bit: 0
+Correct key bit: 0
+------------------------
+Trial #35
+flag = WACON2023{d98258a1319cd9e5}
+Count: 35285, Bias: 0.076812744140625
+Guessed key bit: 0
+Correct key bit: 0
+------------------------
+Trial #36
+flag = WACON2023{c638bec6b8f84d31}
+Count: 35497, Bias: 0.083282470703125
+Guessed key bit: 0
+Correct key bit: 0
+------------------------
+Trial #37
+flag = WACON2023{28394b3c11caf4f1}
+Count: 34991, Bias: 0.067840576171875
+Guessed key bit: 0
+Correct key bit: 0
+------------------------
+Trial #38
+flag = WACON2023{21d8bd8a4b7ac990}
+Count: 30324, Bias: -0.0745849609375
+Guessed key bit: 1
+Correct key bit: 1
+------------------------
+Trial #39
+flag = WACON2023{61d0f3434faaee7b}
+Count: 35372, Bias: 0.0794677734375
+Guessed key bit: 0
+Correct key bit: 0
+------------------------
+Trial #40
+flag = WACON2023{4f1ec124dd5da049}
+Count: 34839, Bias: 0.063201904296875
+Guessed key bit: 0
+Correct key bit: 0
+------------------------
+Trial #41
+flag = WACON2023{387245ac1e70f6be}
+Count: 34973, Bias: 0.067291259765625
+Guessed key bit: 0
+Correct key bit: 0
+------------------------
+Trial #42
+flag = WACON2023{9bbd01fefa296a89}
+Count: 35182, Bias: 0.07366943359375
+Guessed key bit: 0
+Correct key bit: 0
+------------------------
+Trial #43
+flag = WACON2023{b76bc3b58180281d}
+Count: 35273, Bias: 0.076446533203125
+Guessed key bit: 0
+Correct key bit: 0
+------------------------
+Trial #44
+flag = WACON2023{b9581b2ae8ca96d1}
+Count: 30385, Bias: -0.072723388671875
+Guessed key bit: 1
+Correct key bit: 1
+------------------------
+Trial #45
+flag = WACON2023{06051e3f9230125f}
+Count: 35363, Bias: 0.079193115234375
+Guessed key bit: 0
+Correct key bit: 0
+------------------------
+Trial #46
+flag = WACON2023{83baedcfeb92509e}
+Count: 30052, Bias: -0.0828857421875
+Guessed key bit: 1
+Correct key bit: 1
+------------------------
+Trial #47
+flag = WACON2023{507866a44fe5ff53}
+Count: 34953, Bias: 0.066680908203125
+Guessed key bit: 0
+Correct key bit: 0
+------------------------
+Trial #48
+flag = WACON2023{f6d2d4c8ea5ce37c}
+Count: 30080, Bias: -0.08203125
+Guessed key bit: 1
+Correct key bit: 1
+------------------------
+Trial #49
+flag = WACON2023{11a8848843c4dad8}
+Count: 34921, Bias: 0.065704345703125
+Guessed key bit: 0
+Correct key bit: 0
+------------------------
+Trial #50
+flag = WACON2023{e4ddfed6e76f43cc}
+Count: 35274, Bias: 0.07647705078125
+Guessed key bit: 0
+Correct key bit: 0
+------------------------
+Trial #51
+flag = WACON2023{a2f498e47b360076}
+Count: 30414, Bias: -0.07183837890625
+Guessed key bit: 1
+Correct key bit: 1
+------------------------
+Trial #52
+flag = WACON2023{89925ba73cfcc0f0}
+Count: 30071, Bias: -0.082305908203125
+Guessed key bit: 1
+Correct key bit: 1
+------------------------
+Trial #53
+flag = WACON2023{60aff661e73faa19}
+Count: 30068, Bias: -0.0823974609375
+Guessed key bit: 1
+Correct key bit: 1
+------------------------
+Trial #54
+flag = WACON2023{1ae53362651a674f}
+Count: 35233, Bias: 0.075225830078125
+Guessed key bit: 0
+Correct key bit: 0
+------------------------
+Trial #55
+flag = WACON2023{b485a2308b098b80}
+Count: 30499, Bias: -0.069244384765625
+Guessed key bit: 1
+Correct key bit: 1
+------------------------
+Trial #56
+flag = WACON2023{3a24f681563e8895}
+Count: 35294, Bias: 0.07708740234375
+Guessed key bit: 0
+Correct key bit: 0
+------------------------
+Trial #57
+flag = WACON2023{f1586afd4444cb48}
+Count: 35474, Bias: 0.08258056640625
+Guessed key bit: 0
+Correct key bit: 0
+------------------------
+Trial #58
+flag = WACON2023{e2820f49b84e6235}
+Count: 35277, Bias: 0.076568603515625
+Guessed key bit: 0
+Correct key bit: 0
+------------------------
+Trial #59
+flag = WACON2023{e9a0e27853aa1b21}
+Count: 30438, Bias: -0.07110595703125
+Guessed key bit: 1
+Correct key bit: 1
+------------------------
+Trial #60
+flag = WACON2023{b770449441797466}
+Count: 35283, Bias: 0.076751708984375
+Guessed key bit: 0
+Correct key bit: 0
+------------------------
+Trial #61
+flag = WACON2023{d635b701b70a6cd7}
+Count: 30198, Bias: -0.07843017578125
+Guessed key bit: 1
+Correct key bit: 1
+------------------------
+Trial #62
+flag = WACON2023{bb85c33b62fbb75c}
+Count: 35100, Bias: 0.0711669921875
+Guessed key bit: 0
+Correct key bit: 0
+------------------------
+Trial #63
+flag = WACON2023{55e4c3c129f5c39a}
+Count: 30360, Bias: -0.073486328125
+Guessed key bit: 1
+Correct key bit: 1
+------------------------
+Trial #64
+flag = WACON2023{001aae0893dc2073}
+Count: 35098, Bias: 0.07110595703125
+Guessed key bit: 0
+Correct key bit: 0
+------------------------
