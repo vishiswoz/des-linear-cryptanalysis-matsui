@@ -32,23 +32,37 @@ def generate_LAT(S_BOX):
                     Lat[alpha - 1][beta - 1] += 1
     return Lat
 
-def find_linear_approx(lat, THRESHOLD=14):
+def find_linear_approx(lat_idx, THRESHOLD=14, ignore_indexes=None):
     # search lat and print indxes with abs(bias) above THRESHOLD
     # by default THRESHOLD is 14
-
-    for i in range(len(lat)):
-        for j in range(len(lat[0])):
-            if abs(lat[i][j]) >= THRESHOLD:
-                print(f"input mask: {bin(i + 1)[2:].zfill(6)}, output mask: {bin(j + 1)[2:].zfill(4)}, bias: {lat[i][j]}")
+    # if ignore_indexes is set, it's should be a list containing values from 0 to 7 and if those bit indexes are used in the mask then we can't use them
+    # important for when charset is not truely "random" and certain bits are biased, we can only use bits that are 100% biased or 0% biased.
+    lat = LATs[lat_idx]
+    if ignore_indexes:
+         for i in range(len(lat)):
+            for j in range(len(lat[0])):
+                if abs(lat[i][j]) >= THRESHOLD:
+                    input_mask = i + 1
+                    output_mask = j + 1
+                    a = [des.E[lat_idx*6 + x] for x, y in enumerate(bin(input_mask)[2:].zfill(6)) if y == "1"] # input bits
+                    # output bits after sbox and xor is permuted using the P array
+                    b = [des.P.index(lat_idx*4 + x) for x, y in enumerate(bin(output_mask)[2:].zfill(4)) if y == "1"] # output bits
+                    if any(thing % 8 in ignore_indexes for thing in a + b): continue
+                    print(f"input mask: {bin(i + 1)[2:].zfill(6)}, output mask: {bin(j + 1)[2:].zfill(4)}, bias: {lat[i][j]}")
+    else:
+        for i in range(len(lat)):
+            for j in range(len(lat[0])):
+                if abs(lat[i][j]) >= THRESHOLD:
+                    print(f"input mask: {bin(i + 1)[2:].zfill(6)}, output mask: {bin(j + 1)[2:].zfill(4)}, bias: {lat[i][j]}")
 
 LATs = []
 for i in range(8):
     LATs.append(generate_LAT(des.S_BOX[i]))
 
-# for i in range(8):
-#     print(f"SBOX #{i + 1}:")
-#     find_linear_approx(LATs[i])
-#     print("--------------------------")
+#for i in range(8):
+#    print(f"SBOX #{i + 1}:")
+#    find_linear_approx(i, THRESHOLD=8, ignore_indexes=[3, 4, 6])
+#    print("--------------------------")
 
 '''
 SBOX #1:
@@ -132,6 +146,22 @@ def print_matsui_equation(sbox_num, input_mask, output_mask):
     print(f"X[{','.join(map(str, a))}] ^ F(X, K)[{','.join(map(str, b))}] = K[{','.join(map(str, c))}]")
 
 #print_matsui_equation(5, 0b010000, 0b1111)
+
+# SBOX 5
+# input mask: 001000, output mask: 1011, bias: -12
+# print_matsui_equation(5, 0b001000, 0b1011)
+# X[17] ^ F(X, K)[2,5,26] = K[26]
+
+# SBOX 6
+# input mask: 001000, output mask: 0111, bias: -8
+#print_matsui_equation(6, 0b001000, 0b0111)
+# X[21] ^ F(X, K)[7,21,23] = K[32]
+
+# SBOX 3
+# input mask: 010000, output mask: 0110, bias: 8
+#print_matsui_equation(3, 0b010000, 0b0110)
+# X[8] ^ F(X, K)[13,29] = K[13]
+
 # X[16] ^ F(X, K)[2,5,22,26] = K[25]
 # above says we're using bit 25 of the key xorred with bit 16 of our input
 # and it's strongly linearly related to bits 2, 5, 22, and 26 of the output of the round function F
@@ -139,7 +169,7 @@ def print_matsui_equation(sbox_num, input_mask, output_mask):
 # Due to the Feistal construction of DES, we have to pick a second linear approximation to cancel out this one
 # It has to use only a singular bit index 16 for the round function F
 # For now assume it's only a single input index
-def find_linear_approx_chain(inp_bit_idx, THRESHOLD=10):
+def find_linear_approx_chain(inp_bit_idx, THRESHOLD=10, ignore_indexes=None):
     # (sbox_num - 1)*4 + x == P[inp_bit_idx]
     # 0 <= sbox_num <= 7
     # 0 <= x <= 3
@@ -157,9 +187,20 @@ def find_linear_approx_chain(inp_bit_idx, THRESHOLD=10):
     # we lower the default THRESHOLD here since there's a lot less choices
     for i in range(len(lat)):
         if abs(lat[i][output_mask - 1]) >= THRESHOLD:
-            print(f"input mask: {bin(i + 1)[2:].zfill(6)}, output mask: {bin(output_mask)[2:].zfill(4)}, bias: {lat[i][output_mask - 1]}")
+            if ignore_indexes:
+                input_mask = i + 1
+                a = [des.E[sbox_num*6 + x] for x, y in enumerate(bin(input_mask)[2:].zfill(6)) if y == "1"] # input bits
+                # output bits after sbox and xor is permuted using the P array
+                b = [des.P.index(sbox_num*4 + x) for x, y in enumerate(bin(output_mask)[2:].zfill(4)) if y == "1"] # output bits
+                if any(thing % 8 in ignore_indexes for thing in a + b): continue
+                print(f"input mask: {bin(i + 1)[2:].zfill(6)}, output mask: {bin(output_mask)[2:].zfill(4)}, bias: {lat[i][output_mask - 1]}")
+            else:
+                print(f"input mask: {bin(i + 1)[2:].zfill(6)}, output mask: {bin(output_mask)[2:].zfill(4)}, bias: {lat[i][output_mask - 1]}")
 
-#find_linear_approx_chain(16)
+# find_linear_approx_chain(16)
+#find_linear_approx_chain(17, THRESHOLD=0, ignore_indexes=[3, 4, 6])
+#find_linear_approx_chain(21, THRESHOLD=0, ignore_indexes=[3, 4, 6])
+#find_linear_approx_chain(8, THRESHOLD=0, ignore_indexes=[3, 4, 6])
 
 """ 
 SBOX #3:
@@ -249,6 +290,23 @@ def remove_duplicates(l, r):
 '''
 # Above equation matches up with matsui's analysis
 
+# X[17] ^ F(X, K)[2,5,26] = K[26]
+# print_matsui_equation(4, 0b001000, 0b0001)
+# X[13] ^ F(X, K)[17] = K[20]
+
+l1, r1 = round_func(1, [13], [17], [20])
+l2, r2 = round_func(2, [17], [2,5,26], [26])
+l4, r4 = round_func(4, [17], [2,5,26], [26])
+l5, r5 = round_func(5, [13], [17], [20])
+left, right = remove_duplicates([*l1, *l2, *l4, *l5], [*r1, *r2, *r4, *r5])
+print(left)
+print(right)
+
+'''
+[PL[13], PH[17], PL[2], PL[5], PL[26], CL[2], CL[5], CL[26], CL[13], CH[17]]
+[K[1, 20], K[2, 26], K[4, 26], K[5, 20]]
+'''
+
 
 def algorithm_1(pairs, bit_idxs, bias):
     # given an equation
@@ -287,8 +345,8 @@ def algorithm_1(pairs, bit_idxs, bias):
 
 N = 65536
 
-bias1 = (-20 + 32)/32
-bias2 = (14 + 32)/32
+bias1 = (-12 + 32)/32
+bias2 = (4 + 32)/32
 prob = bias1*bias2 + (1 - bias1)*(1 - bias2)
 total_prob = prob**2 + (1 - prob)**2
 print("Probability Linear Approximation holds:", total_prob) # probability overall linear approx equation holds
@@ -306,18 +364,27 @@ for _ in range(64):
     tmp_key = des.bits_to_bytes(key_bits)
     cipher = des.DES(tmp_key, 5)
     rkeys = cipher.round_keys
+
     k1, k2, k4, k5 = rkeys[0], rkeys[1], rkeys[3], rkeys[4]
 
     random.seed(os.urandom(32))
     pairs = []
     for _ in range(N):
-        #pt = ''.join(random.choices('0123456789-', k=8)).encode()
-        pt = os.urandom(8)
+        pt = ''.join(random.choices('0123456789-', k=8)).encode()
+        #pt = os.urandom(8)
         ct = cipher.encrypt(pt)
         pairs.append((pt, ct))
 
-    guess_key_bit, cnt = algorithm_1(pairs, [[16], [7,9,10,11,12,2,5,22,26], [16], [7,9,10,11,12,2,5,22,26]], total_prob)
+    guess_key_bit, cnt = algorithm_1(pairs, [[17], [13,2,5,26], [17], [13,2,5,26]], total_prob)
     print(f"Count: {cnt}, Bias: {(cnt - N//2)/(N//2)}")
     print("Guessed key bit:", guess_key_bit)
-    print("Correct key bit:", xor_multiple(k1, [12, 14, 15, 16, 17]) ^ xor_multiple(k5, [12, 14, 15, 16, 17]) ^ k2[25] ^ k4[25])
+    print("Correct key bit:", xor_multiple(k1, [20]) ^ xor_multiple(k5, [20]) ^ k2[26] ^ k4[26])
     print("------------------------")
+
+""" charset = '0123456789-'
+for i in range(8):
+    cnt = 0
+    for c in charset:
+        b = (ord(c) >> i) & 1
+        if b == 0: cnt += 1
+    print(f"Bit #{7 - i}: Bias {cnt/len(charset) - 0.5}") """
