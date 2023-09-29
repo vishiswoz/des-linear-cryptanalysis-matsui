@@ -47,22 +47,39 @@ def find_linear_approx(lat_idx, THRESHOLD=14, ignore_indexes=None):
                     a = [des.E[lat_idx*6 + x] for x, y in enumerate(bin(input_mask)[2:].zfill(6)) if y == "1"] # input bits
                     # output bits after sbox and xor is permuted using the P array
                     b = [des.P.index(lat_idx*4 + x) for x, y in enumerate(bin(output_mask)[2:].zfill(4)) if y == "1"] # output bits
-                    if any(thing % 8 in ignore_indexes for thing in a + b): continue
+                    if any(thing in ignore_indexes for thing in a + b): continue
                     print(f"input mask: {bin(i + 1)[2:].zfill(6)}, output mask: {bin(j + 1)[2:].zfill(4)}, bias: {lat[i][j]}")
+                    print_matsui_equation(lat_idx + 1, i + 1, j + 1)
     else:
         for i in range(len(lat)):
             for j in range(len(lat[0])):
                 if abs(lat[i][j]) >= THRESHOLD:
                     print(f"input mask: {bin(i + 1)[2:].zfill(6)}, output mask: {bin(j + 1)[2:].zfill(4)}, bias: {lat[i][j]}")
+                    print_matsui_equation(lat_idx + 1, i + 1, j + 1)
+
+# This function prints out the bits related to the equation for the linear approx we pick for a specific SBOX
+def print_matsui_equation(sbox_num, input_mask, output_mask):
+    # We represent the round function F of DES using our linear approximation
+    # 32-bit input is expanded to 48 using the E array so we have to apply this transformation per what sbox and mask we're using
+    a = [des.E[(sbox_num - 1)*6 + x] for x, y in enumerate(bin(input_mask)[2:].zfill(6)) if y == "1"] # input bits
+    # output bits after sbox and xor is permuted using the P array
+    b = [des.P.index((sbox_num - 1)*4 + x) for x, y in enumerate(bin(output_mask)[2:].zfill(4)) if y == "1"] # output bits
+    c = [(sbox_num - 1)*6 + x for x, y in enumerate(bin(input_mask)[2:].zfill(6)) if y == "1"] # key bits
+    a, b, c = sorted(a), sorted(b), sorted(c)
+
+    print(f"X[{','.join(map(str, a))}] ^ F(X, K)[{','.join(map(str, b))}] = K[{','.join(map(str, c))}]")
 
 LATs = []
 for i in range(8):
     LATs.append(generate_LAT(des.S_BOX[i]))
 
-#for i in range(8):
-#    print(f"SBOX #{i + 1}:")
-#    find_linear_approx(i, THRESHOLD=8, ignore_indexes=[3, 4, 6])
-#    print("--------------------------")
+# bad_bits = [4, 6]
+# bad_bits_full = [thing + 8*i for thing in bad_bits for i in range(8)]
+# bad_idxes = [des.IP.index(bad) for bad in bad_bits_full]
+# for i in range(8):
+#     print(f"SBOX #{i + 1}:")
+#     find_linear_approx(i, THRESHOLD=10, ignore_indexes=bad_idxes)
+#     print("--------------------------")
 
 '''
 SBOX #1:
@@ -133,38 +150,26 @@ tmp = [tmp[x] for x in P]
 L, R = R, xor(L, tmp)
 '''
 
-# This function prints out the bits related to the equation for the linear approx we pick for a specific SBOX
-def print_matsui_equation(sbox_num, input_mask, output_mask):
-    # We represent the round function F of DES using our linear approximation
-    # 32-bit input is expanded to 48 using the E array so we have to apply this transformation per what sbox and mask we're using
-    a = [des.E[(sbox_num - 1)*6 + x] for x, y in enumerate(bin(input_mask)[2:].zfill(6)) if y == "1"] # input bits
-    # output bits after sbox and xor is permuted using the P array
-    b = [des.P.index((sbox_num - 1)*4 + x) for x, y in enumerate(bin(output_mask)[2:].zfill(4)) if y == "1"] # output bits
-    c = [(sbox_num - 1)*6 + x for x, y in enumerate(bin(input_mask)[2:].zfill(6)) if y == "1"] # key bits
-    a, b, c = sorted(a), sorted(b), sorted(c)
-
-    print(f"X[{','.join(map(str, a))}] ^ F(X, K)[{','.join(map(str, b))}] = K[{','.join(map(str, c))}]")
-
-#print_matsui_equation(5, 0b010000, 0b1111)
-
-# SBOX 5
-# input mask: 001000, output mask: 1011, bias: -12
-# print_matsui_equation(5, 0b001000, 0b1011)
-# X[17] ^ F(X, K)[2,5,26] = K[26]
-
-# SBOX 6
-# input mask: 001000, output mask: 0111, bias: -8
-#print_matsui_equation(6, 0b001000, 0b0111)
-# X[21] ^ F(X, K)[7,21,23] = K[32]
-
-# SBOX 3
-# input mask: 010000, output mask: 0110, bias: 8
-#print_matsui_equation(3, 0b010000, 0b0110)
-# X[8] ^ F(X, K)[13,29] = K[13]
-
+# print_matsui_equation(5, 0b010000, 0b1111)
 # X[16] ^ F(X, K)[2,5,22,26] = K[25]
 # above says we're using bit 25 of the key xorred with bit 16 of our input
 # and it's strongly linearly related to bits 2, 5, 22, and 26 of the output of the round function F
+
+# SBOX #3:
+# input mask: 010000, output mask: 0110, bias: 8
+# print_matsui_equation(3, 0b010000, 0b0110)
+
+# SBOX 6
+# input mask: 101000, output mask: 1101, bias: -12
+# print_matsui_equation(6, 0b101000, 0b1101)
+# X[19,21] ^ F(X, K)[21,23,28] = K[30,32]
+
+# SBOX 7
+# input mask: 000101, output mask: 0011, bias: 10
+# input mask: 010100, output mask: 0010, bias: 8
+# print_matsui_equation(6, 0b010100, 0b0010)
+# X[22,24] ^ F(X, K)[7,21] = K[33,35]
+# X[20,22] ^ F(X, K)[7] = K[31,33]
 
 # Due to the Feistal construction of DES, we have to pick a second linear approximation to cancel out this one
 # It has to use only a singular bit index 16 for the round function F
@@ -173,7 +178,9 @@ def find_linear_approx_chain(inp_bit_idx, THRESHOLD=10, ignore_indexes=None):
     # (sbox_num - 1)*4 + x == P[inp_bit_idx]
     # 0 <= sbox_num <= 7
     # 0 <= x <= 3
+    #inp_bit_idxes = [des.P[inp_bit_idx] for inp_bit_idx in inp_bit_idxes]
     inp_bit_idx = des.P[inp_bit_idx]
+
     sbox_num = inp_bit_idx // 4
     o = inp_bit_idx % 4
     output_mask = '0'*o + '1' + '0'*(3 - o) # assuming single index
@@ -198,9 +205,7 @@ def find_linear_approx_chain(inp_bit_idx, THRESHOLD=10, ignore_indexes=None):
                 print(f"input mask: {bin(i + 1)[2:].zfill(6)}, output mask: {bin(output_mask)[2:].zfill(4)}, bias: {lat[i][output_mask - 1]}")
 
 # find_linear_approx_chain(16)
-#find_linear_approx_chain(17, THRESHOLD=0, ignore_indexes=[3, 4, 6])
-#find_linear_approx_chain(21, THRESHOLD=0, ignore_indexes=[3, 4, 6])
-#find_linear_approx_chain(8, THRESHOLD=0, ignore_indexes=[3, 4, 6])
+# find_linear_approx_chain(8, THRESHOLD=0, ignore_indexes=bad_idxes)
 
 """ 
 SBOX #3:
@@ -294,18 +299,27 @@ def remove_duplicates(l, r):
 # print_matsui_equation(4, 0b001000, 0b0001)
 # X[13] ^ F(X, K)[17] = K[20]
 
-l1, r1 = round_func(1, [13], [17], [20])
-l2, r2 = round_func(2, [17], [2,5,26], [26])
-l4, r4 = round_func(4, [17], [2,5,26], [26])
-l5, r5 = round_func(5, [13], [17], [20])
-left, right = remove_duplicates([*l1, *l2, *l4, *l5], [*r1, *r2, *r4, *r5])
-print(left)
-print(right)
+# input mask: 010000, output mask: 1011, bias: 12
+# X[8] ^ F(X, K)[12,16,29] = K[13]
+# input mask: 111000, output mask: 0010, bias: 10
+# X[27,28,29] ^ F(X, K)[8] = K[42,43,44]
+
+# l1, r1 = round_func(1, [27,28,29], [8], [42,43,44])
+# l2, r2 = round_func(2, [8], [12,16,29], [13])
+# l4, r4 = round_func(4, [8], [12,16,29], [13])
+# l5, r5 = round_func(5, [27,28,29], [8], [42,43,44])
+# left, right = remove_duplicates([*l1, *l2, *l4, *l5], [*r1, *r2, *r4, *r5])
+# print(left)
+# print(right)
 
 '''
-[PL[13], PH[17], PL[2], PL[5], PL[26], CL[2], CL[5], CL[26], CL[13], CH[17]]
-[K[1, 20], K[2, 26], K[4, 26], K[5, 20]]
+[PL[27], PL[28], PH[8], PL[12], PL[16], CL[12], CL[16], CL[27], CL[28], CH[8]]
+[K[1, 42], K[1, 43], K[1, 44], K[2, 13], K[4, 13], K[5, 42], K[5, 43], K[5, 44]]
 '''
+
+alpha = [12,16]
+beta = [27,28]
+gamma = [42,43,44]
 
 
 def algorithm_1(pairs, bit_idxs, bias):
@@ -345,8 +359,8 @@ def algorithm_1(pairs, bit_idxs, bias):
 
 N = 65536
 
-bias1 = (-12 + 32)/32
-bias2 = (4 + 32)/32
+bias1 = (12 + 32)/64
+bias2 = (10 + 32)/64
 prob = bias1*bias2 + (1 - bias1)*(1 - bias2)
 total_prob = prob**2 + (1 - prob)**2
 print("Probability Linear Approximation holds:", total_prob) # probability overall linear approx equation holds
@@ -354,7 +368,7 @@ print(f"# of plaintexts needed: {math.ceil(abs(total_prob - 0.5)**(-2))}")
 
 
 # TEST ALGORITHM 1
-for _ in range(64):
+""" for _ in range(64):
     key = os.urandom(8)
     flag = "WACON2023{" + key.hex() + "}"
     print(f"Trial #{_ + 1}")
@@ -375,11 +389,11 @@ for _ in range(64):
         ct = cipher.encrypt(pt)
         pairs.append((pt, ct))
 
-    guess_key_bit, cnt = algorithm_1(pairs, [[17], [13,2,5,26], [17], [13,2,5,26]], total_prob)
+    guess_key_bit, cnt = algorithm_1(pairs, [[8], alpha+beta, [8], alpha+beta], total_prob)
     print(f"Count: {cnt}, Bias: {(cnt - N//2)/(N//2)}")
     print("Guessed key bit:", guess_key_bit)
-    print("Correct key bit:", xor_multiple(k1, [20]) ^ xor_multiple(k5, [20]) ^ k2[26] ^ k4[26])
-    print("------------------------")
+    print("Correct key bit:", xor_multiple(k1, gamma) ^ xor_multiple(k5, gamma) ^ k2[13] ^ k4[13])
+    print("------------------------") """
 
 """ charset = '0123456789-'
 for i in range(8):
@@ -388,3 +402,55 @@ for i in range(8):
         b = (ord(c) >> i) & 1
         if b == 0: cnt += 1
     print(f"Bit #{7 - i}: Bias {cnt/len(charset) - 0.5}") """
+
+
+# TEST ON CHALLENGE DATA
+""" guessed_key_bits = []
+for i in range(64):
+    file_pt = open(f"D:/WACON FINALS 2023/data_easy/pt{i}", "rb")
+    file_ct = open(f"D:/WACON FINALS 2023/data_easy/ct{i}", "rb")
+    pairs = []
+
+    for ______ in range(N):
+        pt = file_pt.read(8)
+        ct = file_ct.read(8)
+        pairs.append((pt, ct))
+    
+    guess_key_bit, cnt = algorithm_1(pairs, [[8], alpha+beta, [8], alpha+beta], total_prob)
+    print(f"Count: {cnt}, Bias: {(cnt - N//2)/(N//2)}")
+    print("Guessed key bit:", guess_key_bit)
+    guessed_key_bits.append(guess_key_bit)
+
+    file_pt.close()
+    file_ct.close()
+
+print(guessed_key_bits) """
+
+
+possible_keys = [(1, 1, 1, 0, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0),
+(1, 0, 1, 1, 1, 0, 1, 1, 0, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 0, 0, 1, 1, 1, 0, 0, 1, 0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 1, 1, 0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 1, 0, 0, 0, 1),
+(0, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 1, 0, 1, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 1, 1, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 1, 1, 1, 0),
+(0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 1, 1, 1, 1, 0, 1, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1)]
+
+for key in possible_keys:
+    original_key = des.bits_to_bytes(key)
+
+    file_pt = open(f"D:/WACON FINALS 2023/data_easy/pt{0}", "rb")
+    file_ct = open(f"D:/WACON FINALS 2023/data_easy/ct{0}", "rb")
+    pairs = []
+    
+    for ______ in range(N):
+        pt = file_pt.read(8)
+        ct = file_ct.read(8)
+        pairs.append((pt, ct))
+
+    for pt, ct in pairs:
+        cipher = des.DES(original_key, 5)
+        if cipher.encrypt(pt) != ct:
+            #print("bad key")
+            break
+    else:
+        print("correct key")
+        print(f"flag: WACON{{{ original_key.hex() }}}")
+
+# WACON{bb2ef4b3979b2f51}
