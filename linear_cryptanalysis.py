@@ -73,13 +73,19 @@ LATs = []
 for i in range(8):
     LATs.append(generate_LAT(des.S_BOX[i]))
 
-# bad_bits = [4, 6]
-# bad_bits_full = [thing + 8*i for thing in bad_bits for i in range(8)]
-# bad_idxes = [des.IP.index(bad) for bad in bad_bits_full]
-# for i in range(8):
-#     print(f"SBOX #{i + 1}:")
-#     find_linear_approx(i, THRESHOLD=10, ignore_indexes=bad_idxes)
-#     print("--------------------------")
+bad_bits = [5, 7]
+bad_bits_full = [thing + 8*i for thing in bad_bits for i in range(8)]
+bad_idxes = [des.IP.index(bad) for bad in bad_bits_full]
+for i in range(8):
+    print(f"SBOX #{i + 1}:")
+    find_linear_approx(i, THRESHOLD=10, ignore_indexes=bad_idxes)
+    print("--------------------------")
+
+# idxes = [2,5,7,9,10,11,12,22,26,16]
+# a = [des.IP[idx] for idx in idxes]
+# print(a)
+# a8 = [thing % 8 for thing in a]
+# print(a8)
 
 '''
 SBOX #1:
@@ -359,12 +365,18 @@ def algorithm_1(pairs, bit_idxs, bias):
 
 N = 65536
 
-bias1 = (12 + 32)/64
-bias2 = (10 + 32)/64
-prob = bias1*bias2 + (1 - bias1)*(1 - bias2)
-total_prob = prob**2 + (1 - prob)**2
-print("Probability Linear Approximation holds:", total_prob) # probability overall linear approx equation holds
-print(f"# of plaintexts needed: {math.ceil(abs(total_prob - 0.5)**(-2))}")
+# bias1 = (12 + 32)/64
+# bias2 = (10 + 32)/64
+# #prob = bias1*bias2 + (1 - bias1)*(1 - bias2)
+# #total_prob = prob**2 + (1 - prob)**2
+# total_prob = 0.5 + 2**3*(bias1 - 0.5)*(bias2 - 0.5)*(bias2 - 0.5)*(bias1 - 0.5)
+
+# plaintext_bit_bias = [0.5, 0.5, -0.5, -0.40909090909090906, 0.2272727272727273, 0.045454545454545414, 0.13636363636363635, -0.04545454545454547]
+# print(reduce(operator.mul, [plaintext_bit_bias[i] for i in a8])*2**(len(a8) - 1) + 0.5)
+# new_total_prob = 0.5 + (total_prob - 0.5)*reduce(operator.mul, [2*plaintext_bit_bias[i] for i in a8])
+# print(new_total_prob)
+# print("Probability Linear Approximation holds:", total_prob) # probability overall linear approx equation holds
+# print(f"# of plaintexts needed: {math.ceil(abs(total_prob - 0.5)**(-2))}")
 
 
 # TEST ALGORITHM 1
@@ -427,7 +439,7 @@ for i in range(64):
 print(guessed_key_bits) """
 
 
-possible_keys = [(1, 1, 1, 0, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0),
+""" possible_keys = [(1, 1, 1, 0, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0),
 (1, 0, 1, 1, 1, 0, 1, 1, 0, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 0, 0, 1, 1, 1, 0, 0, 1, 0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 1, 1, 0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 1, 0, 0, 0, 1),
 (0, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 1, 0, 1, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 1, 1, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 1, 1, 1, 0),
 (0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 1, 1, 1, 1, 0, 1, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1)]
@@ -440,7 +452,7 @@ for key in possible_keys:
     pairs = []
     
     for ______ in range(N):
-        pt = file_pt.read(8)
+        pt = file_pt.read(8)6
         ct = file_ct.read(8)
         pairs.append((pt, ct))
 
@@ -451,6 +463,6 @@ for key in possible_keys:
             break
     else:
         print("correct key")
-        print(f"flag: WACON{{{ original_key.hex() }}}")
+        print(f"flag: WACON{{{ original_key.hex() }}}") """
 
 # WACON{bb2ef4b3979b2f51}
